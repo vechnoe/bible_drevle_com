@@ -1,0 +1,6 @@
+.env/
+.idea/
+__pycache__/
+bible_drevle_com.egg-info/
+*.pyc
+*.db

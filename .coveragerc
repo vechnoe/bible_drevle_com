@@ -1,0 +1,3 @@
+[run]
+source = bible_drevle_com
+omit = bible_drevle_com/test*
