@@ -1,14 +1,14 @@
-"""Add book_id
+"""Added book_id
 
-Revision ID: d01f7ce38c96
-Revises: 0fef79a40a66
-Create Date: 2016-08-13 15:56:16.787245
+Revision ID: e491d9fd382a
+Revises: ee0d4ec906ac
+Create Date: 2016-09-14 12:31:37.540448
 
 """
 
 # revision identifiers, used by Alembic.
-revision = 'd01f7ce38c96'
-down_revision = '0fef79a40a66'
+revision = 'e491d9fd382a'
+down_revision = 'ee0d4ec906ac'
 branch_labels = None
 depends_on = None
 

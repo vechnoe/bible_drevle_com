@@ -1,14 +1,14 @@
-"""Added chapter text
+"""Added Chapter Text
 
-Revision ID: 7ce18c6c101a
-Revises: c1bcc61592ed
-Create Date: 2016-08-18 18:45:15.805459
+Revision ID: 9b8c1c72b21b
+Revises: e491d9fd382a
+Create Date: 2016-09-14 12:32:25.366502
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '7ce18c6c101a'
-down_revision = 'c1bcc61592ed'
+revision = '9b8c1c72b21b'
+down_revision = 'e491d9fd382a'
 branch_labels = None
 depends_on = None
 

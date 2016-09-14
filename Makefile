@@ -25,10 +25,9 @@ create_tables:
 	$(ALEMBIC) upgrade head
 
 populate_books:
-	$(PYTHON) $(PROJECT_DIR)/install/db/books.py
+	$(PYTHON) $(PROJECT_DIR)/install/db/populate/books.py
 
-populate:
-	populate_books
+populate: populate_books
 
 clean_temp:
 	find . -name '*.pyc' -delete

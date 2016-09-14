@@ -1,7 +1,7 @@
 from pyramid.view import view_config, view_defaults
 import pyramid.httpexceptions as exc
 
-from bible_drevle_com.models import Book, Chapter, Verse, Session, engine
+from bible_drevle_com.models import Book, Chapter, Session, engine
 
 
 DBSession = Session(bind=engine)
@@ -20,9 +20,7 @@ class BookResource(object):
             return BookDetailResource()
 
     def __json__(self, request):
-        return {
-            'books': Book.get_books()
-        }
+        return Book.get_books()
 
 
 class BookDetailResource(BookResource):
@@ -41,31 +39,14 @@ class BookDetailResource(BookResource):
 
 class ChapterDetailResource(BookDetailResource):
 
-    def __getitem__(self, verse_id):
-        if str(verse_id).isdigit():
-            return VerseDetailResource()
-
     def __json__(self, request):
         book_slug = request.matchdict['traverse'][1]
         chapter_id = request.matchdict['traverse'][2]
-        chapter = Chapter.get_full_chapter(book_slug, chapter_id)
+        chapter = Chapter.get_chapter_text(book_slug, chapter_id)
 
         if not chapter:
             raise exc.HTTPNotFound()
         return chapter
-
-
-class VerseDetailResource(ChapterDetailResource):
-
-    def __json__(self, request):
-        book_slug = request.matchdict['traverse'][1]
-        chapter_id = request.matchdict['traverse'][2]
-        verse_id = request.matchdict['traverse'][3]
-        verse = Verse.get_verse_detail(book_slug, chapter_id, verse_id)
-
-        if not verse:
-            raise exc.HTTPNotFound()
-        return verse
 
 
 @view_defaults(
