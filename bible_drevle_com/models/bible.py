@@ -1,12 +1,20 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import exists
 
 from bible_drevle_com.flatters import *
 from bible_drevle_com.models.base import DBSession, Base
 
 
-class Book(Base):
+class BibleAbstract(Base):
+    __abstract__ = True
+
+    def __str__(self):
+        return self.__repr__()
+
+
+class Book(BibleAbstract):
     __tablename__ = 'books'
 
     book_id = sa.Column(sa.Integer, primary_key=True)
@@ -14,12 +22,10 @@ class Book(Base):
     title = sa.Column(sa.Text)
     title_slavonic = sa.Column(sa.Text)
     book_ending = sa.Column(sa.Text)
+    in_bible_list = sa.Column(sa.Boolean, default=True)
 
     def __repr__(self):
         return '%d: %s' % (self.book_id, self.title)
-
-    def __str__(self):
-        return self.__repr__()
 
     @classmethod
     def exists(cls, book_id):
@@ -59,26 +65,29 @@ class Book(Base):
         return books
 
 
-class Chapter(Base):
-    __tablename__ = 'chapters'
-    book_rel = relationship(
-        'Book', backref=backref('chapters', lazy='dynamic'))
+class ChapterAbstarct(BibleAbstract):
+    __abstract__ = True
 
-    book_slug = sa.Column(
-        sa.String, sa.ForeignKey('books.book_slug'), primary_key=True)
     chapter_id = sa.Column(sa.Integer, primary_key=True)
     title = sa.Column(sa.Text)
     title_slavonic = sa.Column(sa.Text)
     text = sa.Column(sa.Text)
 
+    @declared_attr
+    def book_slug(cls):
+        return sa.Column(
+            sa.String, sa.ForeignKey('books.book_slug'), primary_key=True)
+
+    @declared_attr
+    def book_rel(cls):
+        return relationship(
+            'Book', backref=backref(cls.__tablename__, lazy='dynamic'))
+
     def __repr__(self):
         return '%s: %d' % (self.book_slug, self.chapter_id)
 
-    def __str__(self):
-        return self.__repr__()
-
     @classmethod
-    def get_chapter_text(cls, book_slug, chapter_id):
+    def get_text(cls, book_slug, chapter_id):
         query = DBSession.query(cls)
         chapter = query.filter(
             cls.book_slug == book_slug,
@@ -92,11 +101,19 @@ class Chapter(Base):
             chapterId=chapter.chapter_id,
             title=chapter.title,
             titleSlavonic=chapter.title_slavonic,
-            text=chapter.te
+            text=chapter.text
         )
 
 
-class Kathisma(Base):
+class Chapter(ChapterAbstarct):
+    __tablename__ = 'chapters'
+
+
+class Pericope(ChapterAbstarct):
+    __tablename__ = 'pericopes'
+
+
+class Kathisma(BibleAbstract):
     __tablename__ = 'kathismas'
     book_rel = relationship(
         'Book', backref=backref('kathismas', lazy='dynamic'))
@@ -109,9 +126,6 @@ class Kathisma(Base):
 
     def __repr__(self):
         return 'Кафизма %d' % self.kathisma_id
-
-    def __str__(self):
-        return self.__repr__()
 
     @classmethod
     def get_kathismas(cls):
@@ -139,7 +153,7 @@ class Kathisma(Base):
         )
 
 
-class Psalm(Base):
+class Psalm(BibleAbstract):
     __tablename__ = 'psalms'
     __table_args__ = (
         sa.ForeignKeyConstraint(
@@ -159,6 +173,3 @@ class Psalm(Base):
 
     def __repr__(self):
         return 'Кафизма %d: псалом %d' % (self.kathisma_id, self.psalm_id)
-
-    def __str__(self):
-        return self.__repr__()

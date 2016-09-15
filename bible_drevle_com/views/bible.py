@@ -46,7 +46,7 @@ class ChapterDetailResource(BookDetailResource):
     def __json__(self, request):
         book_slug = request.matchdict['traverse'][1]
         chapter_id = request.matchdict['traverse'][2]
-        chapter = Chapter.get_chapter_text(book_slug, chapter_id)
+        chapter = Chapter.get_text(book_slug, chapter_id)
 
         if not chapter:
             raise exc.HTTPNotFound()
