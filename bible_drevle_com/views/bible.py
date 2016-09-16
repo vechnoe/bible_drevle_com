@@ -2,7 +2,7 @@ from pyramid.view import view_config, view_defaults
 import pyramid.httpexceptions as exc
 
 from bible_drevle_com.models import (
-    Book, Chapter, Kathisma, Psalm, Session, engine
+    Session, engine, Book, Chapter, Kathisma, Psalm
 )
 
 
