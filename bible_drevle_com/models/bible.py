@@ -35,25 +35,38 @@ class Book(BibleAbstract):
         return '%d: %s' % (self.id, self.title)
 
     @classmethod
-    def get_book_detail(cls, slug):
+    def get_detail(cls, slug):
         book = DBSession.query(Book).filter(
             cls.book_slug == slug).first()
         if not book:
                 return None
-        chapters_list = DBSession.query(Chapter).order_by(
+
+        part_list = DBSession.query(Chapter).order_by(
             Chapter.id).filter(Chapter.book_slug == slug).all()
 
         return dict(
-            bookId=book.id,
+            id=book.id,
             bookSlug=book.book_slug,
             bookTitle=book.title,
             titleSlavonic=book.title_slavonic,
             bookEnding=book.book_ending,
-            chapters=list(map(chapter_flatter, chapters_list))
+            chapters=list(map(chapter_flatter, part_list))
         )
 
     @classmethod
-    def get_books(cls):
+    def get_bible_books(cls):
+        query = DBSession.query(cls)
+        book_list = query.filter(
+            cls.in_bible_list == True).order_by(cls.id).all()
+
+        books = dict(
+            bookCount=len(book_list),
+            books=list(map(book_flatter, book_list))
+        )
+        return books
+
+    @classmethod
+    def get_all_books(cls):
         book_list = DBSession.query(cls).order_by(cls.id).all()
 
         books = dict(
@@ -82,22 +95,27 @@ class ChapterAbstarct(BibleAbstract):
         return '%s: %d' % (self.book_slug, self.id)
 
     @classmethod
-    def get_text(cls, book_slug, chapter_id):
+    def get_detail(cls, book_slug=None, part_id=None):
+
         query = DBSession.query(cls)
-        chapter = query.filter(
+        part = query.filter(
             cls.book_slug == book_slug,
-            cls.id == chapter_id).first()
+            cls.id == part_id).first()
 
-        if not chapter:
+        if not part:
             return None
+        return chapter_flatter(part)
 
-        return dict(
-            bookSlug=book_slug,
-            chapterId=chapter.id,
-            title=chapter.title,
-            titleSlavonic=chapter.title_slavonic,
-            text=chapter.text
-        )
+    @classmethod
+    def get_list(cls, book_slug):
+        part_list = DBSession.query(Pericope).order_by(
+                Pericope.id).filter(Pericope.book_slug == book_slug).all()
+
+        result_dict = {
+            'count': len(part_list),
+            cls.__tablename__: list(map(chapter_flatter, part_list))
+        }
+        return result_dict
 
 
 class Chapter(ChapterAbstarct):
@@ -126,12 +144,12 @@ class Kathisma(BibleAbstract):
         kathismas_list = DBSession.query(cls).order_by(cls.id).all()
 
         return dict(
-            kathismasCount=len(kathismas_list),
+            count=len(kathismas_list),
             kathismas=list(map(kathismas_flatter, kathismas_list))
         )
 
     @classmethod
-    def get_kathisma_detail(cls, kathisma_id):
+    def get_detail(cls, kathisma_id):
         kathisma = DBSession.query(cls).filter(
             cls.book_slug == 'psalms').first()
         if not kathisma:
@@ -140,8 +158,8 @@ class Kathisma(BibleAbstract):
             Psalm.id == kathisma_id).all()
 
         return dict(
-            kathismaId=kathisma.id,
-            kathismaTitle=kathisma.title,
+            id=kathisma.id,
+            title=kathisma.title,
             titleSlavonic=kathisma.title_slavonic,
             psalms=list(map(psalm_flatter, psalm_list))
         )
@@ -163,3 +181,11 @@ class Psalm(BibleAbstract):
 
     def __repr__(self):
         return 'Кафизма %d: псалом %d' % (self.kathisma_id, self.psalm_id)
+
+    @classmethod
+    def get_detail(cls, psalm_id):
+        psalm = DBSession.query(cls).filter(
+            cls.id == psalm_id).first()
+        if not psalm:
+            return None
+        return psalm_flatter(psalm)

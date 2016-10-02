@@ -8,25 +8,26 @@ __all__ = [
 
 def chapter_flatter(item):
     return dict(
+        id=item.id,
         title=item.title,
         titleSlavonic=item.title_slavonic,
-        chapterId=item.id,
         text=item.text,
     )
 
 
 def book_flatter(book):
     return dict(
-        bookId=book.id,
+        id=book.id,
         bookSlug=book.book_slug,
         bookTitle=book.title,
         titleSlavonic=book.title_slavonic,
+        bookEnding=book.book_ending,
     )
 
 
 def kathismas_flatter(item):
     return dict(
-        kathismaId=item.id,
+        id=item.id,
         kathismaTitle=item.title,
         kathismaTitleSlavonic=item.title_slavonic,
     )
@@ -34,6 +35,7 @@ def kathismas_flatter(item):
 
 def psalm_flatter(item):
     return dict(
+        id=item.id,
         title=item.title,
         titleSlavonic=item.title_slavonic,
         kathismaId=item.id,

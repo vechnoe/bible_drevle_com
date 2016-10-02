@@ -3,23 +3,34 @@
   "book_slug": "genesis"
   "title": "Бытие"
   "title_slavonic": "ПЄР҃ВЫЍ КНИ́ГИ МОИСИ҆ѠВЫ БЫТИ҆Ꙗ"
+  "in_bible_list": true
 -
   "id": 2
   "book_slug": "exodus"
   "title": "Исход"
   "title_slavonic": "Исход"
+  "in_bible_list": true
 -
   "id": 3
   "book_slug": "leviticus"
   "title": "Левит"
   "title_slavonic": "Левит"
+  "in_bible_list": true
 -
   "id": 4
   "book_slug": "numbers"
   "title": "Числа"
   "title_slavonic": "Числа"
+  "in_bible_list": true
 -
   "id": 22
   "book_slug": "psalms"
   "title": "Псалтырь"
   "title_slavonic": "Псалтырь"
+  "in_bible_list": true
+-
+  "id": 78
+  "book_slug": "apostle"
+  "title": "Апостол"
+  "title_slavonic": "Апостол"
+  "in_bible_list": false
